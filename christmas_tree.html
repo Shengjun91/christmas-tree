@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🎄 Animated Christmas Tree</title>
+<style>
+  body {
+    background: #0f172a;
+    color: #e5e7eb;
+    font-family: monospace;
+    text-align: center;
+    padding: 40px;
+    overflow: hidden;
+  }
+  button {
+    background: #22c55e;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    z-index: 100;
+    position: relative;
+  }
+  button:hover {
+    background: #16a34a;
+  }
+  #tree {
+    display: inline-block;
+    text-align: center;
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+  }
+  .tree-line {
+    white-space: pre;
+  }
+  .leaf {
+    display: inline-block;
+    animation: blink 1.5s infinite alternate;
+  }
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+  .snowflake {
+    position: absolute;
+    top: 0;
+    font-size: 16px;
+    color: #ffffff;
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 50;
+  }
+</style>
+</head>
+<body>
+<h1>🎄 Animated Christmas Tree</h1>
+<p>Click the button to generate your colorful, animated Christmas tree!</p>
+<button onclick="generateTree()">Generate Tree</button>
+
+<div id="tree"></div>
+
+<script>
+const words = ["TDSE", "PTC", "OTC", "ARM", "SFA"];
+const colors = ["#f87171", "#fbbf24", "#34d399", "#60a5fa", "#a78bfa", "#f472b6", "#facc15"];
+
+function getRandomColor() {
+  return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function generateTree() {
+  const treeDiv = document.getElementById("tree");
+  treeDiv.innerHTML = "";
+  const height = Math.floor(Math.random() * 4) + 7; // 7-10 layers
+
+  // Generate tree crown
+  for (let i = 1; i <= height; i++) {
+    const lineDiv = document.createElement("div");
+    lineDiv.className = "tree-line";
+
+    const spaces = "\xa0".repeat(height - i);
+    lineDiv.innerHTML += spaces;
+
+    const elementsInLine = i * 2 - 1;
+    for (let j = 0; j < elementsInLine; j++) {
+      let content = Math.random() < 0.2 ? "*" : words[Math.floor(Math.random() * words.length)];
+      const color = getRandomColor();
+      lineDiv.innerHTML += `<span class="leaf" style="color:${color}">${content}</span>`;
+      lineDiv.innerHTML += " ";
+    }
+
+    lineDiv.innerHTML += spaces;
+    treeDiv.appendChild(lineDiv);
+  }
+
+  // Tree trunk (centered)
+  const trunkHeight = 5;
+  const trunkSpaces = "\xa0".repeat(height - 1);
+  for (let t = 0; t < trunkHeight; t++) {
+    const trunkDiv = document.createElement("div");
+    trunkDiv.className = "tree-line";
+    trunkDiv.innerHTML = trunkSpaces + "||";
+    treeDiv.appendChild(trunkDiv);
+  }
+
+  // Base
+  const baseDiv = document.createElement("div");
+  baseDiv.className = "tree-line";
+  baseDiv.innerHTML = "=".repeat(height * 4 - 1);
+  treeDiv.appendChild(baseDiv);
+
+  startSnow();
+}
+
+// Snow animation
+function startSnow() {
+  const snowCount = 40;
+  const snowflakes = [];
+  for (let i = 0; i < snowCount; i++) {
+    const flake = document.createElement("div");
+    flake.className = "snowflake";
+    flake.innerText = "*";
+    flake.style.left = Math.random() * window.innerWidth + "px";
+    flake.style.fontSize = 10 + Math.random() * 10 + "px";
+    flake.style.opacity = Math.random();
+    document.body.appendChild(flake);
+    snowflakes.push({
+      el: flake,
+      x: parseFloat(flake.style.left),
+      y: Math.random() * window.innerHeight,
+      speed: 0.5 + Math.random() * 1.5
+    });
+  }
+
+  function animateSnow() {
+    snowflakes.forEach(f => {
+      f.y += f.speed;
+      if (f.y > window.innerHeight) f.y = -10;
+      f.el.style.top = f.y + "px";
+    });
+    requestAnimationFrame(animateSnow);
+  }
+  animateSnow();
+}
+</script>
+</body>
+</html>
